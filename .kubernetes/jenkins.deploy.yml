@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-with-dind
+spec:
+  selector:
+    matchLabels:
+      app: jenkins-with-dind
+  template:
+    metadata:
+      labels:
+        app: jenkins-with-dind
+    spec:
+      containers:
+      - name: jenkins-master
+        image: nexus166/jenkins:master
+        env:
+          - name: JENKINS_USER
+            value: "devel"
+          - name: JENKINS_PASS
+            value: "yeah"
+          - name: JENKINS_OPTS
+            value: "--httpPort=8080"
+          - name: JENKINS_JAVA_OPTIONS
+            value: "-Dmail.smtp.starttls.enable=true"
+          - name: JAVA_OPTS
+            value: "-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+        ports:
+          - name: jenkins-http
+            containerPort: 8080
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+
+      - name: jenkins-dind
+        image: nexus166/dind:alpine
+        env:
+        - name: DOCKER_ADDR
+          value: "0.0.0.0"
+        - name: DOCKER_PORT
+          value: "23750"
+        ports:
+          - name: dockerd
+            containerPort: 23750
+        volumeMounts:
+        - name: dockervol
+          mountPath: /var/lib/docker
+        securityContext:
+          privileged: true
+
+      volumes:
+      - name: jenkins-home
+        emptyDir: {}
+      - name: dockervol
+        emptyDir: {}
