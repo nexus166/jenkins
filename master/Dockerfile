@@ -65,7 +65,6 @@ RUN	chmod -v +x \
 	chmod -v +x /sbin/tini; \
 	mkdir -vp /usr/share/jenkins/ref/init.groovy.d; \
 	curl -fsSL "${JENKINS_URL}" -o /usr/share/jenkins/jenkins.war; \
-	printf 'import jenkins.model.*\nimport hudson.security.*\n\ndef env = System.getenv()\ndef jenkins = Jenkins.getInstance()\njenkins.setSecurityRealm(new HudsonPrivateSecurityRealm(false))\njenkins.setAuthorizationStrategy(new GlobalMatrixAuthorizationStrategy())\ndef user = jenkins.getSecurityRealm().createAccount(env.JENKINS_USER, env.JENKINS_PASS)\nuser.save()\n\njenkins.getAuthorizationStrategy().add(Jenkins.ADMINISTER, env.JENKINS_USER)\njenkins.save()\n' | tee /usr/share/jenkins/ref/init.groovy.d/init-user.groovy; \
 	printf 'import jenkins.model.*\nJenkins.instance.setNumExecutors(0)\n' | tee /usr/share/jenkins/ref/init.groovy.d/no-executors.groovy; \
 	chown -vR "${user}:${group}" \
 		"$JENKINS_HOME" \
