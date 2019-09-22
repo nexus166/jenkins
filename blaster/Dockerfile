@@ -1,8 +1,8 @@
-FROM    ubuntu:disco
+FROM	debian:buster-slim
 SHELL   ["/bin/bash", "-euvxo", "pipefail", "-c"]
 
 ARG     OS_ARCH=amd64
-ARG     OS_REL=disco
+ARG     OS_REL=buster
 RUN     printf 'hosts: files dns\n' | tee /etc/nsswitch.conf; \
 	mkdir -vp /usr/share/man/man1; \
 	export DEBIAN_FRONTEND="noninteractive"; \
@@ -39,12 +39,12 @@ ENV	DOCKER_HOST="tcp://${DOCKER_ADDR}:${DOCKER_PORT}"
 VOLUME	/var/lib/docker
 
 ARG     GOPATH="/opt/go"
-ARG     GO_VERSION="1.12.6"
+ARG     GO_VERSION="1.13"
 RUN     case $OS_ARCH in \
 		arm*) export OS_ARCH=armv6l;; \
 	esac; \
 	curl -fsSLo- "https://dl.google.com/go/go${GO_VERSION}.linux-${OS_ARCH}.tar.gz" | tar zxf - -C /usr/local; \
-        printf "export GOPATH=/opt/go\\nexport GOROOT=/usr/local/go\\nexport PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin\\n" | tee /etc/profile.d/golang.sh; \
+        printf "export GOPROXY=direct\\nexport GOPATH=/opt/go\\nexport GOROOT=/usr/local/go\\nexport PATH=\$PATH:\$GOROOT/bin:\$GOPATH/bin\\n" | tee /etc/profile.d/golang.sh; \
         mkdir -vp "${GOPATH}";
 
 ARG     KUBECTL_VERSION
@@ -58,19 +58,12 @@ RUN     KUBECTL_VERSION="${KUBECTL_VERSION:-$(curl -s https://storage.googleapis
 ARG     HELM_VERSION="v2.14.1"
 RUN     curl -fsSLo- "https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get" | bash -s - --version "$HELM_VERSION";
 
-ARG     VAULT_VERSION="1.1.3"
+ARG     VAULT_VERSION="1.2.3"
 RUN     case $OS_ARCH in \
 		arm*) export OS_ARCH=arm;; \
 	esac; \
 	curl -fsSLo- "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${OS_ARCH}.zip" | gunzip -v - > /usr/local/bin/vault; \
         chmod -v +x /usr/local/bin/vault;
-
-ADD	https://raw.githubusercontent.com/jenkinsci/docker-jnlp-slave/master/jenkins-slave	/usr/local/bin/jenkins-slave
-ARG     AGENT_VERSION="3.29"
-RUN     curl --create-dirs -sSLo /usr/share/jenkins/slave.jar "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${AGENT_VERSION}/remoting-${AGENT_VERSION}.jar"; \
-        chmod -v a+rx /usr/local/bin/jenkins-slave; \
-        chmod -v 755 /usr/share/jenkins; \
-        chmod -v 644 /usr/share/jenkins/slave.jar;
 
 ARG     user=jenkins
 RUN     export GRPID="$(shuf -i 2000-3000 -n1)"; \
@@ -85,7 +78,7 @@ RUN     export GRPID="$(shuf -i 2000-3000 -n1)"; \
         mkdir -vp "/home/${user}/.jenkins"; \
 	chown -vR "${user}:${user}" "/home/${user}" "${GOPATH}"
 
-RUN	printf '#!/bin/bash -evx\n/bin/bash -c "sudo /usr/local/bin/dockerd-entrypoint.sh dockerd --host=tcp://${DOCKER_ADDR:-"127.0.0.1"}:${DOCKER_PORT:-"2375"}" &\n/usr/local/bin/jenkins-slave ${@}\n' | tee /usr/local/bin/entrypoint.sh; \
+RUN	printf '#!/bin/bash -evx\n(sudo /usr/local/bin/dockerd-entrypoint.sh dockerd --host=tcp://${DOCKER_ADDR:-"127.0.0.1"}:${DOCKER_PORT:-"2375"}) & eval ${@:-"tail -f /dev/null"}\n' | tee /usr/local/bin/entrypoint.sh; \
 	chmod -v a+rx /usr/local/bin/entrypoint.sh
 
 ENV     AGENT_WORKDIR="/home/${user}/.jenkins" \
