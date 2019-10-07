@@ -28,7 +28,7 @@ ARG	https_port=8443
 ARG	agent_port=50000
 ARG	JENKINS_HOME=/var/jenkins_home
 
-ENV	JENKINS_VERSION="${JENKINS_VERSION:-2.196}" \
+ENV	JENKINS_VERSION="${JENKINS_VERSION:-2.199}" \
 	JENKINS_HOME="$JENKINS_HOME" \
 	JENKINS_SLAVE_AGENT_PORT="${agent_port}" \
 	JENKINS_UC="https://updates.jenkins.io" \
@@ -85,7 +85,7 @@ RUN	/usr/local/bin/install-plugins.sh \
 		ldap lockable-resources login-theme mailer mapdb-api matrix-auth matrix-project maven-plugin metrics momentjs multiple-scms next-build-number pam-auth \
 		parameterized-trigger pipeline-build-step pipeline-graph-analysis pipeline-input-step pipeline-milestone-step pipeline-model-api pipeline-model-declarative-agent \
 		pipeline-model-definition pipeline-model-extensions pipeline-rest-api pipeline-stage-step pipeline-stage-tags-metadata pipeline-stage-view pipeline-utility-steps \
-		plain-credentials purge-build-queue-plugin rebuild reverse-proxy-auth-plugin run-condition saferestart scm-api script-security sidebar-link simple-theme-plugin slack ssh ssh-agent ssh-credentials \
+		plain-credentials purge-build-queue-plugin rebuild reverse-proxy-auth-plugin rocketchatnotifier run-condition saferestart scm-api script-security sidebar-link simple-theme-plugin slack ssh ssh-agent ssh-credentials \
 		ssh-slaves structs subversion token-macro translation variant windows-slaves workflow-aggregator workflow-api workflow-basic-steps workflow-cps workflow-cps-global-lib \
 		workflow-durable-task-step workflow-job workflow-multibranch workflow-scm-step workflow-step-api workflow-support
 
