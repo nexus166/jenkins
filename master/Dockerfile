@@ -80,7 +80,7 @@ RUN	/usr/local/bin/install-plugins.sh \
 		ace-editor ansicolor ant antisamy-markup-formatter apache-httpcomponents-client-4-api artifactory authentication-tokens authorize-project bouncycastle-api \
 		branch-api build-keeper-plugin build-pipeline-plugin cloudbees-disk-usage-simple cloudbees-folder conditional-buildstep config-file-provider \
 		copyartifact credentials credentials-binding cvs display-url-api docker-commons docker-java-api docker-plugin docker-workflow durable-task \
-		email-ext external-monitor-job ghprb git git-client git-server github github-api github-branch-source gradle handlebars http_request icon-shim \
+		email-ext external-monitor-job ghprb git git-client git-server github github-api github-branch-source github-oauth gradle handlebars http_request icon-shim \
 		ivy jackson2-api javadoc jdk-tool job-dsl jobConfigHistory jquery jquery-detached jsch junit kubernetes kubernetes-credentials label-linked-jobs \
 		ldap lockable-resources login-theme mailer mapdb-api matrix-auth matrix-project maven-plugin metrics momentjs multiple-scms next-build-number pam-auth \
 		parameterized-trigger pipeline-build-step pipeline-graph-analysis pipeline-input-step pipeline-milestone-step pipeline-model-api pipeline-model-declarative-agent \
