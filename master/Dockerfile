@@ -28,7 +28,7 @@ ARG	https_port=8443
 ARG	agent_port=50000
 ARG	JENKINS_HOME=/var/jenkins_home
 
-ENV	JENKINS_VERSION="${JENKINS_VERSION:-2.199}" \
+ENV	JENKINS_VERSION="${JENKINS_VERSION:-2.201}" \
 	JENKINS_HOME="$JENKINS_HOME" \
 	JENKINS_SLAVE_AGENT_PORT="${agent_port}" \
 	JENKINS_UC="https://updates.jenkins.io" \
